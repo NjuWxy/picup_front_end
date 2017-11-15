@@ -11,4 +11,4 @@ const Example = () => {
 Example.propTypes = {
 };
 
-export default Example;ç
+export default Example;
