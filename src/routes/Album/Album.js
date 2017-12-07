@@ -19,7 +19,7 @@ class Album extends React.Component{
       return(
         <div className={styles.card} key={album.aid}>
           <h1 className={styles.title}>{album.name}</h1>
-          <img className={styles.img} src={require('../../assets/cat.jpg')} />
+          <img className={styles.img} src={require('../../assets/yay.jpg')} />
           <div className={styles.bottom}>
             <span className={styles.time}>{album.date}</span>
             <Button
