@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'dva';
 import { routerRedux } from 'dva/router';
-import { Layout, Menu, Icon, Input, Col, Row, Badge, Button } from 'antd';
+import { Layout, Menu, Icon, Input, Col, Row, Badge, Button, message } from 'antd';
 import styles from './MyLayout.less';
 
 
@@ -10,15 +10,25 @@ const SubMenu = Menu.SubMenu;
 
 class MyLayout extends React.Component {
   handleClick = (e) => {
-    this.props.dispatch(routerRedux.push({
-      pathname: `/${e.key}`
-    }));
+    if(e.key === 'Logout'){
+      this.props.dispatch({
+        type: 'users/logout',
+      })
+    }else {
+      this.props.dispatch(routerRedux.push({
+        pathname: `/${e.key}`
+      }));
+    }
   };
   handleSearch = (e) => {
     console.log(e.target.value);
   };
 
   changeToPost = () => {
+    if(!this.props.isLogin){
+      message.error("woops,您还没有登陆哦");
+      return;
+    }
     this.props.dispatch(routerRedux.push({
       pathname: '/Post'
     }))
@@ -94,7 +104,8 @@ class MyLayout extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { isLogin, username } = state.users;
+  const { isLogin, userInfo } = state.users;
+  let username = userInfo.username;
   return { isLogin, username };
 }
 

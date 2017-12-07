@@ -89,8 +89,18 @@ export function getAlbums() {
   return albums;
 }
 
-export function getHotGallery() {
-  return gallery;
+export function getHotGallery(username,pageNum) {
+  const formData = new window.FormData();
+  formData.append('username', username);
+  formData.append('pageNum', pageNum);
+  const promise = request('/api/gallery/hotGallery', {
+    method: 'POST',
+    body: formData,
+  });
+  return promise.then((v) => {
+    console.log(v.data+"==========getHotGallery");
+    return v.data;
+  });
 }
 
 export function delAlbum(albumID) {
@@ -105,6 +115,24 @@ export function delAlbum(albumID) {
     albums.splice(delIndex,1);
   }
   return true;
+}
+
+export function post(fileNames,title,description, tags, albumId, uid) {
+  const formData = new window.FormData();
+  formData.append('fileNames', fileNames);
+  formData.append('title', title);
+  formData.append('description', description);
+  formData.append('tags', tags);
+  formData.append('albumId', albumId);
+  formData.append('uid', uid);
+  const promise = request('/api/photo/postPhoto', {
+    method: 'POST',
+    body: formData,
+  });
+  return promise.then((v) => {
+    console.log(v.data+"==========login");
+    return v.data;
+  });
 }
 
 

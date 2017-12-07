@@ -1,32 +1,23 @@
 import React from 'react';
 import { connect } from 'dva';
-import { Row, Col, Upload, Icon, Form, Input, Tooltip, Cascader, Select, Checkbox, Button, AutoComplete, Tag  } from 'antd';
+import { Row, Col, Upload, Icon, Form, Input, Tooltip, Select, Button, Tag  } from 'antd';
 import styles from './Post.less';
 import MyLayout from '../../components/MyLayout/MyLayout';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 const { TextArea } = Input;
-const CheckableTag = Tag.CheckableTag;
 
 class PostForm extends React.Component {
   state = {
     /**
-     * 创建专辑输入框是否可见，为false时不可见而按钮可见
-     */
-    inputNewAlbumVisible: false,
-    /**
-     * 创建专辑输入框的值
-     */
-    inputNewAlbumValue: '',
-    /**
      * 选择专辑的选定值, 每个用户有一个默认专辑，初选为默认专辑
      */
-    selectValue:'默认专辑',
+    selectValue:this.props.defaultAid,
     /**
      * 本次动态的标签列表，最多可以有六个标签
      */
-    tags: ["女神","人像","明星","风景"],
+    tags: [],
     /**
      * 添加标签的输入框是否可见，为false时不可见而按钮可见
      */
@@ -65,43 +56,11 @@ class PostForm extends React.Component {
   };
 
   /**
-   * 点击+创建专辑之后，+创建专辑的位置变为一个input组件，即让input组件显现出来，并且获得焦点
-   */
-  showInputNewAlbum = () => {
-    this.setState({inputNewAlbumVisible:true},() => this.input.focus());
-  };
-
-  /**
    * 添加标签的输入变化时，改变this.state.inputValue
    * @param e
    */
   handleInputChange = (e) => {
     this.setState({ inputValue: e.target.value });
-  };
-
-  /**
-   * 创建专辑的输入变化时，改变this.state.inputNewAlbumValue
-   * @param e
-   */
-  handleInputNewAlbumChange = (e) => {
-    this.setState({ inputNewAlbumValue:e.target.value});
-  };
-
-  /**
-   * 点击热门标签添加热门标签，即点击热门标签，将该标签加入this.state.tags
-   * @param tag 被点击的热门标签
-   */
-  addTag = (tag) => {
-    let tags = this.state.tags;
-    if(tags.length<6){
-      if (tag && tags.indexOf(tag) === -1) {
-        tags = [...tags, tag];
-      }
-      console.log(tags);
-      this.setState({
-        tags,
-      });
-    }
   };
 
   /**
@@ -124,54 +83,16 @@ class PostForm extends React.Component {
     });
   };
 
-  /**
-   * 当创建专辑的输入框失去焦点或者用户在此输入框输入回车时，代表用户已经创建专辑完成，此时应：
-   * 1.将创建专辑的输入框的值置为''，并让输入框不可见按钮可见（即inputNewAlbumVisible: false）
-   * 2.将该专辑加入this.state.albums todo 首先向后台请求添加专辑
-   * 3.将选择专辑的选定值设为新创建的专辑
-   */
-  handleInputNewAlbumConfirm = () => {
-    const inputNewAlbumValue = this.state.inputNewAlbumValue;
-    this.props.dispatch({
-      type: 'users/createAlbum',
-      payload: { album: inputNewAlbumValue}
-    });
-    let albums = this.props.albums;
-    const email = window.sessionStorage.getItem("email");
-    let newAlbum = {
-      aid: email+inputNewAlbumValue,
-      title:inputNewAlbumValue,
-      email
-    };
-    albums.push(newAlbum);
-    this.props.dispatch({
-      type: 'users/updateAlbums',
-      payload:{ albums },
-    });
-    // let albums = this.state.albums;
-    // if(inputNewAlbumValue && albums.indexOf(inputNewAlbumValue) === -1){
-    //   albums = [...albums, inputNewAlbumValue];
-    // }
-    // console.log(albums);
-    this.setState({
-      // albums: this.props.albumTitles.map((album) => {
-      //   return(<Option key={album}>{album}</Option>)
-      // }),
-      inputNewAlbumVisible: false,
-      inputNewAlbumValue: '',
-      selectValue: inputNewAlbumValue
-    })
-  };
 
   saveInputRef = input => this.input = input;
 
-  saveInputNewAlbumRef = input => this.input = input;
 
   /**
    *  更改selectValue（选择专辑的选定值）
    * @param value 选择专辑的选定值
    */
   handleAlbumSelect = (value) => {
+    console.log("selectValue:"+value);
     this.setState({selectValue: value});
   };
 
@@ -185,51 +106,28 @@ class PostForm extends React.Component {
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         console.log('Received values of form: ', values);
-        //files, title, description, tags, albumId, email
-        const email = window.sessionStorage.getItem("email");
-        const albumId = email+this.state.selectValue;
+        //fileNames,title,description, tags, albumId, uid
+        const fileNames = this.state.fileList.map((file)=>file.name);
+        const albumId = this.state.selectValue;
         this.props.dispatch({
-          type: 'show/postPhoto',
+          type: 'pictures/post',
           payload: {
-            fileNames: this.state.fileList.map((file)=>file.name),
+            fileNames,
             title: values.title,
             description: values.description,
             tags: this.state.tags,
-            albumId, email
+            albumId,
+            uid: this.props.uid
           }
         });
         console.log(this.state.fileList);
-        this.hidePostPhoto();
-        // const share = {
-        //   title: values.title,
-        //   description: values.description,
-        //   tags: this.state.tags,
-        //   album: this.state.selectValue,
-        //   images: this.state.fileList.map((file) => { return file.originFileObj})
-        // };
-        // console.log(share);
       }
     });
   };
 
-  hidePostPhoto = () => {
-    this.props.dispatch({
-      type:'modalStates/showPostPhoto',
-      payload: {showPostPhoto: false},
-    });
-  };
-
-
   render() {
     const { fileList, tags, inputVisible, inputValue } = this.state;
     const { getFieldDecorator } = this.props.form;
-
-    /**
-     * 热门标签 todo 向底层请求热门标签
-     * @type {[*]}
-     */
-    const hotTags = this.props.hotTags;
-
     return (
       <MyLayout location={this.props.location}>
         <Row>
@@ -238,7 +136,7 @@ class PostForm extends React.Component {
               <Col span={18}>
                 <div className={styles.picturePart}>
                   <Upload
-                    action="/api/show/upload"
+                    action="/api/photo/upload"
                     listType="picture-card"
                     fileList={fileList}
                     onChange={this.handleChange}
@@ -269,8 +167,8 @@ class PostForm extends React.Component {
                             value={this.state.selectValue}
                             dropdownStyle={{maxHeight: 100, overflow: 'auto'}}
                           >
-                            {this.props.albumTitles.map((album) => {
-                              return(<Option key={album}>{album}</Option>)
+                            {this.props.albums.map((album) => {
+                              return(<Option key={album.aid}>{album.title}</Option>)
                             })}
                           </Select>
                         </div>
@@ -336,8 +234,10 @@ class PostForm extends React.Component {
 const Post = Form.create()(PostForm);
 
 function mapStateToProps(state) {
-
-  return{ albumTitles: ["默认专辑","我的相册"]}
+  const { albums,userInfo } = state.users;
+  const uid = userInfo.uid;
+  const defaultAid = albums[0].aid;
+  return{ albums, uid,defaultAid }
 }
 
 export default connect(mapStateToProps)(Post);

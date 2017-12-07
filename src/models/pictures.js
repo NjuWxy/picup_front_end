@@ -14,8 +14,13 @@ export default {
     setup({ dispatch, history }) {// eslint-disable-line
       return history.listen(({ pathname, query }) => {
         if (pathname === '/HotGallery') {
+          const username = window.sessionStorage.getItem("username") === null?"":window.sessionStorage.getItem("username");
           dispatch({
             type: 'getHotGallery',
+            payload: {
+              username,
+              pageNum: 0,
+            }
           });
         }else if(pathname === '/Album') {
           dispatch({
@@ -27,8 +32,18 @@ export default {
   },
 
   effects: {
-    *getHotGallery({ payload }, { call, put }) {  // eslint-disable-line
-      const hotGallery = yield call(pictureService.getHotGallery);
+    * post({ payload: { fileNames,title,description, tags, albumId, uid}},{call,put}){
+      const result = yield call(pictureService.post,fileNames,title,description, tags, albumId, uid);
+      if(result!=="SUCCESS"){
+        message.error("woops,发布失败");
+      }else {
+        yield put(routerRedux.push({
+          pathname:'/HotGallery'
+        }))
+      }
+    },
+    *getHotGallery({ payload:{username,pageNum} }, { call, put }) {  // eslint-disable-line
+      const hotGallery = yield call(pictureService.getHotGallery,username,pageNum);
       yield put(
         {
           type: 'saveHotGallery',
