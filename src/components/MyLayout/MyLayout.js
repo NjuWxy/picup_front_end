@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'dva';
 import { routerRedux } from 'dva/router';
-import { Layout, Menu, Icon, Input, Col, Row, Dropdown, BackTop, Badge, Button } from 'antd';
+import { Layout, Menu, Icon, Input, Col, Row, Badge, Button } from 'antd';
 import styles from './MyLayout.less';
 
 
@@ -10,29 +10,20 @@ const SubMenu = Menu.SubMenu;
 
 class MyLayout extends React.Component {
   handleClick = (e) => {
-    if(e.key === 'Login'){
-      this.showLogin();
-    } else {
-      this.props.dispatch(routerRedux.push({
-        pathname: `/${e.key}`
-      }));
-    }
+    this.props.dispatch(routerRedux.push({
+      pathname: `/${e.key}`
+    }));
   };
   handleSearch = (e) => {
     console.log(e.target.value);
   };
-  showLogin = () => {
-    this.props.dispatch({
-      type: 'modalStates/showLogin',
-      payload: { showLogin: true }
-    })
+
+  changeToPost = () => {
+    this.props.dispatch(routerRedux.push({
+      pathname: '/Post'
+    }))
   };
-  hideLogin = () => {
-    this.props.dispatch({
-      type: 'modalStates/showLogin',
-      payload: { showLogin: false }
-    })
-  };
+
   render(){
     return (
       <Layout className={styles.layout}>
@@ -87,7 +78,7 @@ class MyLayout extends React.Component {
               </Badge>
             </Col>
             <Col span={1}>
-              <Button className={styles.post}>发布</Button>
+              <Button className={styles.post} onClick={this.changeToPost}>发布</Button>
             </Col>
           </Row>
         </div>
@@ -104,8 +95,7 @@ class MyLayout extends React.Component {
 
 function mapStateToProps(state) {
   const { isLogin, username } = state.users;
-  const { showLogin, showPostPhoto } = state.modalStates;
-  return { isLogin, username, showLogin, showPostPhoto };
+  return { isLogin, username };
 }
 
 export default connect(mapStateToProps)(MyLayout);

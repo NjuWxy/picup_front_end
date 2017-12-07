@@ -20,7 +20,7 @@ function ImageCard({dispatch,item}) {
   return(
     <div className={styles.card} onClick={turnToDetail}>
       <h3 className={styles.title}>{item.title}</h3>
-      <img className={styles.img} src={location+'cat.jpg'}/>
+      <img className={styles.img} src={require(`../../../assets/这是第1个.jpg`)}/>
       <div className={styles.userPart}>
         <span className={styles.username}>{item.username}</span>
         <span className={styles.time}>{item.time}</span>

@@ -4,7 +4,7 @@ export default {
   namespace: 'users',
   state: {
     isLogin: (window.sessionStorage.getItem('email') === null),
-    username: '小馨雨'
+    username: '高岳'
   },
 
   subscriptions: {
