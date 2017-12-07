@@ -9,7 +9,6 @@ const app = dva();
 
 // 3. Model
 app.model(require('./models/users'));
-app.model(require('./models/modalStates'));
 app.model(require('./models/followManage'));
 app.model(require('./models/pictures'));
 

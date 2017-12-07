@@ -4,28 +4,22 @@ let follows = [
   {
     groupID:'特别关注',
     groupMember:[
-      {email: '1213@qq.com',username: 'shea',avatarUrl: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'},
-      {email: '2213@qq.com',username: 'john',avatarUrl: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'},
-      {email: '3213@qq.com',username: '小馨雨',avatarUrl: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'}
     ]
   },
   {
     groupID:'大明星',
     groupMember:[
-      {email: '1223@qq.com',username: 'shea大明星',avatarUrl: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'},
-      {email: '223f3@qq.com',username: 'john大明星',avatarUrl: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'},
-      {email: '3243@qq.com',username: '小馨雨大明星',avatarUrl: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'}
     ]
   }
 ];
 
 let newFollows = [
-  {key: '1223@qq.com',email: '1223@qq.com',username: 'shea大明星',avatarUrl: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'},
-  {key: '223f3@qq.com',email: '223f3@qq.com',username: 'john大明星',avatarUrl: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'},
-  {key: '3243@qq.com',email: '3243@qq.com',username: '小馨雨大明星',avatarUrl: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'},
-  {key: '1213@qq.com',email: '1213@qq.com',username: 'shea',avatarUrl: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'},
-  {key: '2213@qq.com',email: '2213@qq.com',username: 'john',avatarUrl: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'},
-  {key: '3213@qq.com',email: '3213@qq.com',username: '小馨雨',avatarUrl: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'}
+  {key: '12258643@qq.com',email: '12258643@qq.com',username: 'Gaoyue',avatarUrl: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'},
+  {key: '223f3@qq.com',email: '223f3@qq.com',username: '煤气罐儿大明星',avatarUrl: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'},
+  {key: '3dfjhkdsg243@qq.com',email: '3dfjhkdsg243@qq.com',username: '小月月大明星',avatarUrl: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'},
+  {key: '1213@qq.com',email: '挨1213@qq.com',username: 'Gaoyue',avatarUrl: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'},
+  {key: '221458763@qq.com',email: '221458763@qq.com',username: '煤气罐儿',avatarUrl: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'},
+  {key: '32901913@qq.com',email: '32901913@qq.com',username: '小月月',avatarUrl: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'}
 ];
 
 export function getFollows() {
