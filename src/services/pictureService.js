@@ -30,6 +30,23 @@ export function getHotGallery(username,pageNum) {
   });
 }
 
+export function getGalleryDetail(gid) {
+  const detail = {
+    gid,
+    username: '高岳',
+    avatar: "http://localhost:8080/picture/1512711829658dog1.jpg",
+    pictures: [
+      "http://localhost:8080/picture/1512711829658dog1.jpg"
+    ],
+    title: 'ok',
+    description: 'ok',
+    likeNum: 2,
+    formatDate: '2017-10-10',
+    tags: ['pet','cat']
+  };
+  return detail;
+}
+
 export function delAlbum(albumID) {
   let delIndex = -1;
   for(let i=0;i<albums.length;i++){

@@ -8,13 +8,22 @@ export default {
   state: {
     hotGallery: [],
     albums: [],
+    detail: {},
   },
 
   subscriptions: {
     setup({ dispatch, history }) {// eslint-disable-line
       return history.listen(({ pathname, query }) => {
+        if(pathname === '/PicDetail'){
+          dispatch({
+            type: 'saveDetail',
+            payload: {
+              gid: query.gid,
+            }
+          })
+        }
         if (pathname === '/HotGallery') {
-          const username = window.sessionStorage.getItem("username") === null?"":window.sessionStorage.getItem("username");
+          const username = "";
           dispatch({
             type: 'getHotGallery',
             payload: {
@@ -22,11 +31,12 @@ export default {
               pageNum: 0,
             }
           });
-        }else if(pathname === '/Album') {
-          dispatch({
-            type: 'getAlbum',
-          })
         }
+        // else if(pathname === '/Album') {
+        //   dispatch({
+        //     type: 'getAlbum',
+        //   })
+        // }
       });
     },
   },
@@ -42,13 +52,22 @@ export default {
         }))
       }
     },
-    *getHotGallery({ payload:{username,pageNum} }, { call, put }) {  // eslint-disable-line
+    *getHotGallery({ payload:{username="",pageNum=0} }, { call, put }) {  // eslint-disable-line
       const hotGallery = yield call(pictureService.getHotGallery,username,pageNum);
       yield put(
         {
           type: 'saveHotGallery',
           payload: { hotGallery }
         });
+    },
+    *saveDetail({ payload: { gid }}, { call, put }) {
+      const detail = yield call(pictureService.getGalleryDetail, gid);
+      yield put(
+        {
+          type: 'saveDetail',
+          payload: { detail },
+        }
+      );
     },
     *getAlbum({ payload },{call,put}){
       const albums = yield call(pictureService.getAlbums);
@@ -71,10 +90,14 @@ export default {
 
   reducers: {
     saveHotGallery(state, { payload: { hotGallery }}) {
+
       return { ...state, hotGallery };
     },
     saveAlbums(state, { payload: { albums }}) {
       return { ...state, albums };
+    },
+    saveDetail(state, { payload: { detail }}) {
+      return { ...state, detail };
     },
   },
 

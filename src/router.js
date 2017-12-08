@@ -9,14 +9,14 @@ import Album from './routes/Album/Album';
 import Login from './routes/Login/Login';
 import Post from './routes/Post/Post';
 
-function RouterConfig({ history }) {
+function RouterConfig({ hashHistory }) {
   return (
-    <Router history={history}>
+    <Router history={hashHistory}>
       <Route path="/" component={IndexPage} />
       <Route path="/HotGallery" component={Gallery} />
+      <Route path="/PicDetail" component={PicDetail} />
       <Route path="/FollowManage" component={Follow}/>
       <Route path="/ChangePsw" component={ChangePsw}/>
-      <Route path="/PicDetail" component={PicDetail} />
       <Route path="/Album" component={Album} />
       <Route path="/Login" component={Login} />
       <Route path="/Post" component={Post}/>

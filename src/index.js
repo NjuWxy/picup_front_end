@@ -1,8 +1,15 @@
 import dva from 'dva';
+import hashHistory from 'dva/router';
+import 'antd/dist/antd.less';
 import './index.css';
 
 // 1. Initialize
-const app = dva();
+const app = dva({
+  history: hashHistory,
+  // onError(e){
+  //
+  // }
+});
 
 // 2. Plugins
 // app.use({});
