@@ -1,11 +1,10 @@
 import React from 'react';
 import { connect } from 'dva';
-import { routerRedux } from 'dva/router';
 import { Row, Col, Button, Input } from 'antd';
-import styles from './Album.less';
-import MyLayout from '../../components/MyLayout/MyLayout';
+import styles from './NewFollow.less';
+import MyLayout from '../../../components/MyLayout/MyLayout';
 
-class Album extends React.Component{
+class Follow extends React.Component{
 
   state = {
     isCreateAlbumButton: true,
@@ -47,16 +46,6 @@ class Album extends React.Component{
     })
   };
 
-  toDetail = (aid) => {
-    this.props.dispatch(routerRedux.push({
-      pathname: '/AlbumDetail',
-      query: {
-        aid
-      }
-    }))
-  };
-
-
   render(){
     const albumCards = this.props.albums.map((album) => {
       return(
@@ -66,7 +55,7 @@ class Album extends React.Component{
             album.photos.length === 0?
               <img className={styles.img} src={require('../../assets/defaultAlbumCover.jpg')} />
               :
-              <img className={styles.img} src={album.photos[0]} onClick={()=>{this.toDetail(album.aid)}} />
+              <img className={styles.img} src={album.photos[0]} />
           }
           <div className={styles.bottom}>
             {
@@ -120,9 +109,10 @@ class Album extends React.Component{
 }
 
 function mapStateToProps(state) {
-  const { albums } = state.album;
-  console.log(albums);
-  return { albums };
+  const { followedUser } = state.users;
+  return { followedUser };
 }
 
-export default connect(mapStateToProps)(Album);
+
+export default connect(mapStateToProps)(Follow);
+

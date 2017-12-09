@@ -3,6 +3,7 @@ import { connect } from 'dva';
 import { Row, Col, Upload, Icon, Form, Input, Tooltip, Select, Button, Tag  } from 'antd';
 import styles from './Post.less';
 import MyLayout from '../../components/MyLayout/MyLayout';
+import { getUid } from '../../utils/tools';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -13,7 +14,7 @@ class PostForm extends React.Component {
     /**
      * 选择专辑的选定值, 每个用户有一个默认专辑，初选为默认专辑
      */
-    selectValue:this.props.defaultAid,
+    selectValue:'',
     /**
      * 本次动态的标签列表，最多可以有六个标签
      */
@@ -110,14 +111,14 @@ class PostForm extends React.Component {
         const fileNames = this.state.fileList.map((file)=>file.name);
         const albumId = this.state.selectValue;
         this.props.dispatch({
-          type: 'pictures/post',
+          type: 'photo/post',
           payload: {
             fileNames,
             title: values.title,
             description: values.description,
             tags: this.state.tags,
             albumId,
-            uid: this.props.uid
+            uid: getUid()
           }
         });
         console.log(this.state.fileList);
@@ -158,31 +159,38 @@ class PostForm extends React.Component {
                   <Form onSubmit={this.handleSubmit}>
                     <h3 className={styles.label}>同时添加到相册</h3>
                     <FormItem>
-                      {getFieldDecorator('album')(
-                        <div>
-                          <Select
-                            style={{ width: '100%' }}
-                            placeholder="请选择相册"
-                            onChange={this.handleAlbumSelect}
-                            value={this.state.selectValue}
-                            dropdownStyle={{maxHeight: 100, overflow: 'auto'}}
-                          >
-                            {this.props.albums.map((album) => {
-                              return(<Option key={album.aid}>{album.title}</Option>)
-                            })}
-                          </Select>
-                        </div>
+                      {getFieldDecorator('album',{
+                        rules: [
+                          { required: true, message: '相册不能为空!' }],
+                      })(
+                        <Select
+                          style={{ width: '100%' }}
+                          placeholder="请选择相册"
+                          onChange={this.handleAlbumSelect}
+                          value={this.state.selectValue}
+                          dropdownStyle={{maxHeight: 100, overflow: 'auto'}}
+                        >
+                          {this.props.albums.map((album) => {
+                            return(<Option key={album.aid}>{album.title}</Option>)
+                          })}
+                        </Select>
                       )}
                     </FormItem>
                     <h3 className={styles.label}>标题</h3>
                     <FormItem>
-                      {getFieldDecorator('title',{initialValue:""})(
+                      {getFieldDecorator('title',{
+                        rules: [
+                          { required: true, message: '标题不能为空!' }],
+                      },{initialValue:""})(
                         <Input />
                       )}
                     </FormItem>
                     <h3 className={styles.label}>描述</h3>
                     <FormItem>
-                      {getFieldDecorator('description',{initialValue:""})(
+                      {getFieldDecorator('description',{
+                        rules: [
+                          { required: true, message: '描述不能为空!' }],
+                      },{initialValue:""})(
                         <TextArea rows={4} />
                       )}
                     </FormItem>
@@ -234,10 +242,8 @@ class PostForm extends React.Component {
 const Post = Form.create()(PostForm);
 
 function mapStateToProps(state) {
-  const { albums,userInfo } = state.users;
-  const uid = userInfo.uid;
-  const defaultAid = albums[0].aid;
-  return{ albums, uid,defaultAid }
+  const { albums } = state.album;
+  return{ albums }
 }
 
 export default connect(mapStateToProps)(Post);

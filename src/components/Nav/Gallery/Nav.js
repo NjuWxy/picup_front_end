@@ -1,12 +1,17 @@
 import React from 'react';
-import { Row, Col, Menu } from 'antd';
+import { Row, Col, Menu, message } from 'antd';
 import { connect } from 'dva';
 import { routerRedux } from 'dva/router';
 import styles from './Nav.less';
+import { isLogin } from '../../../utils/tools';
 
 function Nav ({ dispatch, location }){
-   function handleClick(e){
+  function handleClick(e){
     console.log(e.key);
+    if(e.key === 'InterestGallery' && !isLogin()) {
+      message.error("woops,你还没有登陆");
+      return;
+    }
     dispatch(routerRedux.push({
       pathname: `/${e.key}`
     }));
@@ -20,8 +25,9 @@ function Nav ({ dispatch, location }){
           mode="horizontal"
           className={styles.category}
         >
-          <Menu.Item key="PersonSetting" className={styles.menuItem}>个人设置</Menu.Item>
-          <Menu.Item key="FollowManage" className={styles.menuItem}>关注管理</Menu.Item>
+          <Menu.Item key="HotGallery" className={styles.menuItem}>推荐列表</Menu.Item>
+          <Menu.Item key="LatestGallery" className={styles.menuItem}>最新发布</Menu.Item>
+          <Menu.Item key="InterestGallery" className={styles.menuItem}>我的关注</Menu.Item>
         </Menu>
       </Col>
     </Row>
@@ -33,3 +39,4 @@ function mapStateToProps(state) {
 }
 
 export default connect()(Nav);
+

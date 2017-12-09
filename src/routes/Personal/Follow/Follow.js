@@ -9,14 +9,14 @@ import Nav from '../../../components/Nav/Personal/Nav';
 
 class Follow extends React.Component {
   state = {
-    selectedKeys: []
+    selectedRows: []
   };
 
   cancelFollow = () => {
     this.props.dispatch({
-      type: 'followManage/cancelFollow',
+      type: 'users/unfollowUserList',
       payload: {
-        memberEmails: this.state.selectedKeys
+        followedUsernameList: this.state.selectedRows
       }
     });
   };
@@ -29,29 +29,29 @@ class Follow extends React.Component {
     }, {
       title: '昵称',
       dataIndex: 'username',
-    }, {
-      title: 'email',
-      dataIndex: 'email',
     }];
     const rowSelection = {
       onChange: (selectedRowKeys, selectedRows) => {
         this.setState({
-          selectedKeys: selectedRowKeys
+          selectedRows: selectedRows.map(row => row.key),
         });
-        console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
       }
     };
     return(
       <MyLayout>
         <Nav location={this.props.location} />
-        <Row className={styles.content}>
-          <Col offset={4} span={16}>
-            <Button className={styles.cancelFollow} onClick={this.cancelFollow}>取消关注</Button>
-          </Col>
-        </Row>
-        <Row className={styles.tablePart}>
-          <Col offset={4} span={16}>
-            <Table rowSelection={rowSelection} columns={columns} dataSource={this.props.follows} />
+        <Row>
+          <Col offset={8} span={8} className={styles.content}>
+            <Row>
+              <Col offset={4} span={16}>
+                <Button className={styles.cancelFollow} onClick={this.cancelFollow}>取消关注</Button>
+              </Col>
+            </Row>
+            <Row>
+              <Col offset={4} span={16} className={styles.tablePart}>
+                <Table rowSelection={rowSelection} columns={columns} dataSource={this.props.follows} />
+              </Col>
+            </Row>
           </Col>
         </Row>
       </MyLayout>
@@ -60,8 +60,15 @@ class Follow extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { follows } = state.followManage;
-  console.log(follows);
+  const { followedUser } = state.users;
+  const follows = [];
+  followedUser.map((user) => {
+    follows.push(
+      {key: user.username,
+        username: user.username,
+        avatarUrl: user.avatar
+      })
+  });
   return { follows };
 }
 

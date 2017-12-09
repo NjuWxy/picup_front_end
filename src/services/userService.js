@@ -1,4 +1,5 @@
 import request from '../utils/request';
+import { getUserName } from '../utils/tools';
 
 export function signUp(username,password) {
   console.log(password);
@@ -29,38 +30,94 @@ export function login(username,password) {
   });
 }
 
-export function getAlbums(username) {
+export function changePassword(oldPassword,newPassword) {
+  console.log("oldPassword:"+oldPassword);
+  console.log("newPassword:"+newPassword);
   const formData = new window.FormData();
-  formData.append("username",username);
-  const promise = request('/api/album/getAlbums',{
+  formData.append('username', getUserName());
+  formData.append('oldPassword', oldPassword);
+  formData.append('newPassword', newPassword);
+  const promise = request('/api/user/changePassword', {
     method: 'POST',
     body: formData,
   });
   return promise.then((v) => {
-    printInfo(v.data,"getAlbums");
+    printInfo(v.data,"changePassword");
     return v.data;
   });
 }
 
-/**
- * 创建新专辑
- * @param album 专辑名称
- * @returns {Promise.<TResult>|*}
- */
-export function createAlbum(album) {
-  const email = window.sessionStorage.getItem("email");
+export function postAvatar(avatarFileName) {
   const formData = new window.FormData();
-  formData.append("email",email);
-  formData.append("album",album);
-  const promise = request('/api/album/create',{
+  formData.append('username',getUserName() );
+  formData.append('avatarFileName', avatarFileName);
+  const promise = request('/api/user/postAvatar', {
     method: 'POST',
     body: formData,
   });
   return promise.then((v) => {
-    printInfo(v.data,"createAlbum");
+    printInfo(v.data,"postAvatar");
     return v.data;
   });
 }
+
+export function followUser(followedUsername) {
+  const formData = new window.FormData();
+  formData.append('username',getUserName() );
+  formData.append('followedUsername', followedUsername);
+  const promise = request('/api/user/followUser', {
+    method: 'POST',
+    body: formData,
+  });
+  return promise.then((v) => {
+    printInfo(v.data,"followUser");
+    return v.data;
+  });
+}
+
+
+export function unfollowUser(followedUsername) {
+  const formData = new window.FormData();
+  formData.append('username',getUserName() );
+  formData.append('followedUsername', followedUsername);
+  const promise = request('/api/user/unfollowUser', {
+    method: 'POST',
+    body: formData,
+  });
+  return promise.then((v) => {
+    printInfo(v.data,"unfollowUser");
+    return v.data;
+  });
+}
+
+export function unfollowUserList(followedUsernameList) {
+  const formData = new window.FormData();
+  formData.append('username',getUserName() );
+  formData.append('followedUsernameList', followedUsernameList);
+  const promise = request('/api/user/unfollowUserList', {
+    method: 'POST',
+    body: formData,
+  });
+  return promise.then((v) => {
+    printInfo(v.data,"unfollowUserList");
+    return v.data;
+  });
+}
+
+export function followedUser() {
+  const formData = new window.FormData();
+  formData.append('username',getUserName() );
+  const promise = request('/api/user/followedUser', {
+    method: 'POST',
+    body: formData,
+  });
+  return promise.then((v) => {
+    printInfo(v.data,"followedUser");
+    return v.data;
+  });
+}
+
+
 
 function printInfo(info,func) {
   console.log("userService/"+func+": "+info);

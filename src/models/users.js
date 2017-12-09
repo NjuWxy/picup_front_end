@@ -1,13 +1,12 @@
 import { message } from 'antd';
 import { routerRedux } from 'dva/router';
 import * as userService from '../services/userService';
+import { removeUser, saveUser, saveAvatar, savePassword } from '../utils/tools';
 
 export default {
   namespace: 'users',
   state: {
-    isLogin: false,
-    userInfo:{},
-    albums: [],
+    followedUser: []
   },
 
   subscriptions: {
@@ -17,6 +16,11 @@ export default {
           dispatch({
             type:'test'
           });
+        }
+        if( pathname === '/FollowManage') {
+          dispatch({
+            type: 'followedUser',
+          })
         }
       });
     }
@@ -33,12 +37,7 @@ export default {
         if(userInfo==="FAILURE"){
           message.error("登陆失败");
         }else {
-          window.sessionStorage.setItem("username",username);
-          const albums  = yield call(userService.getAlbums, username);
-          yield put({
-            type: 'saveUserInfo',
-            payload: { userInfo,isLogin: true, albums }
-          });
+          saveUser(userInfo.uid,userInfo.username,userInfo.password,userInfo.avatar);
           yield put(routerRedux.push({
             pathname: '/HotGallery'
           }));
@@ -47,36 +46,104 @@ export default {
     },
     * login({payload: { username,password }},{ call, put }){
       const userInfo = yield call(userService.login, username, password);
+      console.log(userInfo);
       if(userInfo==="FAILURE"){
         message.error("登陆失败");
       }else {
-        window.sessionStorage.setItem("username",username);
-        const albums  = yield call(userService.getAlbums, username);
-        yield put({
-          type: 'saveUserInfo',
-          payload: { userInfo, isLogin: true, albums }
-        });
+        saveUser(userInfo.uid,userInfo.username,userInfo.password,userInfo.avatar);
         yield put(routerRedux.push({
           pathname: '/HotGallery'
         }));
       }
     },
     * logout({payload},{put}){
-      window.sessionStorage.removeItem("username");
+      console.log("logout");
+      removeUser();
+      yield put(routerRedux.push({
+        pathname: '/HotGallery',
+      }))
+    },
+    * changePassword({ payload: { oldPassword, newPassword }}, { call,put }) {
+      const result = yield call(userService.changePassword,oldPassword,newPassword);
+      console.log(result);
+      if(result === 'SUCCESS'){
+        message.success("修改密码成功");
+        savePassword(result);
+        yield put(routerRedux.push({
+          pathname: '/HotGallery'
+        }));
+      }else {
+        message.error("woops，修改密码失败，请检查原密码是否正确");
+      }
+    },
+    * postAvatar({ payload: { avatarFileName }}, { call, put }) {
+      const result = yield call(userService.postAvatar,avatarFileName);
+      console.log("postAvatar:"+result);
+      if(result === 'FAILURE'){
+        message.error("更新头像失败");
+      }else {
+        message.success("更新头像成功");
+        const avatar = result;
+        console.log(avatar);
+        saveAvatar(avatar);
+        yield put(routerRedux.push({
+          pathname: '/HotGallery'
+        }));
+      }
+    },
+    * followUser({ payload: { followedUsername, gid }}, { call, put }){
+      const result = yield call(userService.followUser, followedUsername);
+      if(result !== "SUCCESS"){
+        message.error("关注失败");
+      }else {
+        yield put(routerRedux.push({
+          pathname: '/PicDetail',
+          query: {
+            gid
+          }
+        }))
+      }
+    },
+    * unfollowUser({ payload: { followedUsername, gid }}, { call, put }){
+      const result = yield call(userService.unfollowUser, followedUsername);
+      if(result !== "SUCCESS"){
+        message.error("取消关注失败");
+      }else {
+        yield put(routerRedux.push({
+          pathname: '/PicDetail',
+          query: {
+            gid
+          }
+        }))
+      }
+    },
+    * unfollowUserList({ payload: { followedUsernameList }}, { call, put }){
+      console.log(followedUsernameList);
+      const result = yield call(userService.unfollowUserList, followedUsernameList);
+      if(result !== "SUCCESS"){
+        message.error("取消关注失败");
+      } else {
+        yield put(routerRedux.push({
+          pathname: '/FollowManage'
+        }))
+      }
+    },
+    * followedUser({payload},{ call, put }){
+      const result = yield call(userService.followedUser);
       yield put({
-        type: 'saveUserInfo',
+        type: 'saveFollowedUser',
         payload: {
-          userInfo: {},
-          isLogin:false,
-          albums: []
+          followedUser: result
         }
       })
-    },
+    }
+
+
   },
 
   reducers: {
-    saveUserInfo(state,{payload:{userInfo,isLogin, albums }}){
-      return{...state,userInfo,isLogin, albums};
+    saveFollowedUser( state, { payload: { followedUser }}){
+      return { ...state, followedUser };
     }
   }
 };

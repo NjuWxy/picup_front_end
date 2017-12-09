@@ -1,31 +1,57 @@
 import React from 'react';
-import { Icon } from 'antd';
+import { Icon, message } from 'antd';
 import { connect } from 'dva';
 import { routerRedux } from 'dva/router';
 import styles from './ImageCard.less';
+import { isLogin } from '../../../utils/tools';
 
 
 class ImageCard extends React.Component{
   /**
    * 跳转到分享详情
    */
-  turnToDetail = () => {
-    console.log('ttd');
-    this.props.dispatch(routerRedux.push({
-      pathname: '/PicDetail',
-      query: { gid: this.props.item.gid }
-    }));
+   turnToDetail = () => {
+     this.props.dispatch(routerRedux.push({
+       pathname: '/PicDetail',
+       query: {gid: this.props.item.gid,}
+     }));
   };
-  render(){
 
+  likeAction = () =>  {
+    if(!isLogin()){
+      message.error("您还没有登陆哦！");
+      return;
+    }
+    if(this.props.item.isLiked){
+      this.props.dispatch({
+        type: 'gallery/unlikeGallery',
+        payload: {
+          gid: this.props.item.gid,
+          path: this.props.location.pathname
+        }
+      });
+    }else {
+      this.props.dispatch({
+        type: 'gallery/likeGallery',
+        payload: {
+          gid: this.props.item.gid,
+          path: this.props.location.pathname
+        }
+      });
+    }
+  };
+
+  render() {
+    let likeType = this.props.item.isLiked?'heart':'heart-o';
+    const item = this.props.item;
     return(
-      <div className={styles.card} onClick={this.turnToDetail}>
-        <h3 className={styles.title}>{this.props.item.title}</h3>
-        <img className={styles.img} src={this.props.item.pictures[0]}/>
+      <div className={styles.card}>
+        <h3 className={styles.title}>{item.title}</h3>
+        <img className={styles.img} src={item.pictures[0]} onClick={this.turnToDetail} />
         <div className={styles.userPart}>
-          <span className={styles.username}>{this.props.item.userName}</span>
-          <span className={styles.time}>{this.props.item.formatDate}</span>
-          <span className={styles.like}><Icon type="heart-o" />{this.props.item.likeNum}</span>
+          <span className={styles.username}>{item.userName}</span>
+          <span className={styles.time}>{item.formatDate}</span>
+          <span className={styles.like}><Icon type={likeType} className={styles.likeIcon} onClick={this.likeAction} />{item.likeNum}</span>
         </div>
       </div>
     )

@@ -10,7 +10,7 @@ class Login extends React.Component {
     return(
       <MyLayout locaiton={this.props.location}>
         <Row className={styles.content}>
-          <Col offset={9} span={6} className={styles.loginPart}>
+          <Col offset={9} span={6}>
             <LoginForm />
           </Col>
         </Row>

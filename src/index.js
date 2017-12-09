@@ -17,7 +17,9 @@ const app = dva({
 // 3. Model
 app.model(require('./models/users'));
 app.model(require('./models/followManage'));
-app.model(require('./models/pictures'));
+app.model(require('./models/gallery'));
+app.model(require('./models/photo'));
+app.model(require('./models/album'));
 
 // 4. Router
 app.router(require('./router'));
