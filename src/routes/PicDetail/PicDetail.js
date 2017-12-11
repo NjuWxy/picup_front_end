@@ -90,6 +90,15 @@ class PicDetail extends React.Component {
     }
   };
 
+  handleVisit = () => {
+    this.props.dispatch(routerRedux.push({
+      pathname: '/UserGallery',
+      query:{
+        uid: this.props.detail.uid,
+      }
+    }));
+  };
+
   render() {
     const item = this.props.detail;
     const presentPic = this.props.detail.pictures[this.state.pointer];
@@ -120,7 +129,13 @@ class PicDetail extends React.Component {
         <Col className={styles.rightPart} span={6} style={{minHeight: minHeight}}>
           <div className={styles.publisher}>
             <img className={styles.avatar} src={item.avatar}/>
-            <span className={styles.username}>{item.userName}</span>
+            {
+              isSelf(item.userName)?
+                <span className={styles.username}>{item.userName}</span>
+                :
+                <span className={styles.username} onClick={this.handleVisit}><a>{item.userName}</a></span>
+            }
+
             {
               isSelf(item.userName)?
                 null

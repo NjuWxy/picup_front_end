@@ -6,7 +6,8 @@ import { removeUser, saveUser, saveAvatar, savePassword } from '../utils/tools';
 export default {
   namespace: 'users',
   state: {
-    followedUser: []
+    followedUser: [],
+    messages: [],
   },
 
   subscriptions: {
@@ -20,6 +21,10 @@ export default {
         if( pathname === '/FollowManage') {
           dispatch({
             type: 'followedUser',
+          })
+        }else if(pathname === '/MyMessage') {
+          dispatch({
+            type: 'getMyMessage',
           })
         }
       });
@@ -37,7 +42,9 @@ export default {
         if(userInfo==="FAILURE"){
           message.error("登陆失败");
         }else {
-          saveUser(userInfo.uid,userInfo.username,userInfo.password,userInfo.avatar);
+          console.log("/users/login");
+          console.log(userInfo);
+          saveUser(userInfo.uid,userInfo.username,userInfo.avatar,userInfo.fansNum,userInfo.followedNum);
           yield put(routerRedux.push({
             pathname: '/HotGallery'
           }));
@@ -46,11 +53,12 @@ export default {
     },
     * login({payload: { username,password }},{ call, put }){
       const userInfo = yield call(userService.login, username, password);
+      console.log("/users/login");
       console.log(userInfo);
       if(userInfo==="FAILURE"){
         message.error("登陆失败");
       }else {
-        saveUser(userInfo.uid,userInfo.username,userInfo.password,userInfo.avatar);
+        saveUser(userInfo.uid,userInfo.username,userInfo.avatar,userInfo.fansNum,userInfo.followedNum);
         yield put(routerRedux.push({
           pathname: '/HotGallery'
         }));
@@ -87,7 +95,7 @@ export default {
         console.log(avatar);
         saveAvatar(avatar);
         yield put(routerRedux.push({
-          pathname: '/HotGallery'
+          pathname: '/MyGallery'
         }));
       }
     },
@@ -136,6 +144,15 @@ export default {
           followedUser: result
         }
       })
+    },
+    * getMyMessage({payload},{ call, put }){
+      const messages = yield call(userService.getMessageList);
+      yield put({
+        type: 'saveMyMessage',
+        payload: {
+          messages
+        }
+      })
     }
 
 
@@ -144,7 +161,10 @@ export default {
   reducers: {
     saveFollowedUser( state, { payload: { followedUser }}){
       return { ...state, followedUser };
-    }
+    },
+    saveMyMessage( state, { payload: { messages }}){
+      return { ...state, messages };
+    },
   }
 };
 

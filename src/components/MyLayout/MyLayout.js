@@ -32,10 +32,12 @@ class MyLayout extends React.Component {
   };
   handleSearch = (e) => {
     const tag = e.target.value;
-    this.props.dispatch({
-      type: 'gallery/searchGallery',
-      payload: { tag },
-    });
+    this.props.dispatch(routerRedux.push({
+      pathname: '/SearchGallery',
+      query: {
+        tag,
+      }
+    }))
   };
 
   changeToPost = () => {
@@ -94,7 +96,7 @@ class MyLayout extends React.Component {
                     <SubMenu
                       title={<span className={styles.username}>{getUserName()}</span>}
                     >
-                      <Menu.Item key="PersonSetting">个人中心</Menu.Item>
+                      <Menu.Item key="MyGallery">个人中心</Menu.Item>
                       <Menu.Item key="Logout">退出登陆</Menu.Item>
                     </SubMenu>
                     :

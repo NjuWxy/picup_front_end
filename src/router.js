@@ -9,6 +9,8 @@ import Album from './routes/Album/Album';
 import Login from './routes/Login/Login';
 import Post from './routes/Post/Post';
 import AlbumDetail from './routes/Album/AlbumDetail';
+import MyGallery from './routes/Personal/MyGallery/MyGallery';
+import MyMessage from './routes/Personal/MyMessage/MyMessage';
 
 function RouterConfig({ hashHistory }) {
   return (
@@ -18,6 +20,9 @@ function RouterConfig({ hashHistory }) {
       <Route path="/LatestGallery" component={Gallery} />
       <Route path="/InterestGallery" component={Gallery} />
       <Route path="/SearchGallery" component={Gallery} />
+      <Route path="/MyGallery" component={MyGallery} />
+      <Route path="/MyMessage" component={MyMessage} />
+      <Route path="/UserGallery" component={MyGallery} />
       <Route path="/PicDetail" component={PicDetail} />
       <Route path="/FollowManage" component={Follow}/>
       <Route path="/PersonSetting" component={ChangePsw}/>

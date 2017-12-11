@@ -4,7 +4,7 @@ import { connect } from 'dva';
 import styles from './Follow.less';
 import MyLayout from '../../../components/MyLayout/MyLayout';
 import Nav from '../../../components/Nav/Personal/Nav';
-
+import HomePageHeader from '../../../components/HomePageHeader/HomePageHeader';
 
 
 class Follow extends React.Component {
@@ -39,6 +39,7 @@ class Follow extends React.Component {
     };
     return(
       <MyLayout>
+        <HomePageHeader location={this.props.location} />
         <Nav location={this.props.location} />
         <Row>
           <Col offset={8} span={8} className={styles.content}>

@@ -1,6 +1,7 @@
 import { routerRedux } from 'dva/router';
 import { message } from 'antd';
 import * as galleryService from '../services/galleryService';
+import * as userService from '../services/userService';
 export default {
 
   namespace: 'gallery',
@@ -23,6 +24,8 @@ export default {
       isFollowed: false,
       formatDate: '',
     },
+    visitedUser: {
+    }
   },
 
   subscriptions: {
@@ -53,6 +56,20 @@ export default {
         }else if( pathname === '/InterestGallery') {
           dispatch({
             type: 'getInterestGallery',
+          })
+        }else if( pathname === '/SearchGallery') {
+          dispatch({
+            type: 'searchGallery',
+            payload: { tag: query.tag }
+          })
+        }else if( pathname === '/MyGallery'){
+          dispatch({
+            type: 'getMyGallery',
+          })
+        }else if( pathname === '/UserGallery') {
+          dispatch({
+            type: 'getUserGallery',
+            payload: { uid: query.uid },
           })
         }
       });
@@ -92,10 +109,40 @@ export default {
           type: 'saveGallery',
           payload: { gallery }
         });
-      yield put(routerRedux.push({
-        pathname: '/SearchGallery',
-      }))
     },
+    /**
+     *用户访问自己的主页
+     */
+      * getMyGallery({ payload },{ call, put }){
+      const gallery = yield call(galleryService.getMyGallery);
+      console.log(gallery);
+      yield put(
+        {
+          type: 'saveGallery',
+          payload: { gallery }
+        });
+    },
+
+    /**
+     *用户访问别人的主页
+     * email: 被访问者的email
+     */
+      * getUserGallery({ payload: { uid }}, { call, put }){
+      const gallery = yield call(galleryService.getMyGallery, uid);
+      const visitedUser = yield call(userService.getUser, uid);
+      console.log("/getUserGallery/UserInfo");
+      console.log(visitedUser);
+      yield put(
+        {
+          type: 'saveGallery',
+          payload: { gallery }
+        });
+      yield put({
+        type: 'saveVisitedUser',
+        payload:{ visitedUser },
+      });
+    },
+
     *getDetail({ payload: { gid }}, { call, put }) {
       const detail = yield call(galleryService.getGalleryDetail, gid);
       yield put(
@@ -152,6 +199,9 @@ export default {
     },
     saveDetail(state, { payload: { detail }}) {
       return { ...state, detail };
+    },
+    saveVisitedUser(state, { payload: { visitedUser}}) {
+      return{ ...state, visitedUser};
     },
   },
 

@@ -41,6 +41,19 @@ class ImageCard extends React.Component{
     }
   };
 
+  handleVisit = () => {
+    if(!isLogin()){
+      message.error("您还没有登陆哦！");
+      return;
+    }
+    this.props.dispatch(routerRedux.push({
+      pathname: '/UserGallery',
+      query:{
+        uid: this.props.item.uid,
+      }
+    }));
+  };
+
   render() {
     let likeType = this.props.item.isLiked?'heart':'heart-o';
     const item = this.props.item;
@@ -49,7 +62,12 @@ class ImageCard extends React.Component{
         <h3 className={styles.title}>{item.title}</h3>
         <img className={styles.img} src={item.pictures[0]} onClick={this.turnToDetail} />
         <div className={styles.userPart}>
-          <span className={styles.username}>{item.userName}</span>
+          {
+            this.props.location.pathname === '/MyGallery'||this.props.location.pathname === '/UserGallery'?
+              null
+              :
+              <span className={styles.username} onClick={this.handleVisit}><a>{item.userName}</a></span>
+          }
           <span className={styles.time}>{item.formatDate}</span>
           <span className={styles.like}><Icon type={likeType} className={styles.likeIcon} onClick={this.likeAction} />{item.likeNum}</span>
         </div>

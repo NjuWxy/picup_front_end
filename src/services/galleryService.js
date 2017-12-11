@@ -1,5 +1,5 @@
 import request from '../utils/request';
-import { getUserName } from '../utils/tools';
+import { getUserName, getUid } from '../utils/tools';
 
 export function getHotGallery(pageNum) {
   const formData = new window.FormData();
@@ -42,11 +42,31 @@ export function getInterestGallery() {
   });
 }
 
+/**
+ *
+ * @param uid 访问者
+ * @returns {Promise.<TResult>}
+ */
+export function getMyGallery(uid=getUid()) {
+  const formData = new window.FormData();
+  formData.append('visitor', getUid());
+  formData.append('uid', uid);
+  console.log(uid+"==========="+getUid());
+  const promise = request('/api/gallery/myGallery', {
+    method: 'POST',
+    body: formData,
+  });
+  return promise.then((v) => {
+    console.log(v.data+"==========myGallery");
+    return v.data;
+  });
+}
+
 
 export function searchGallery(tag) {
   const formData = new window.FormData();
   formData.append('username', getUserName());
-  formData.append('tag', tag);
+  formData.append('keyWords', tag);
   const promise = request('/api/gallery/searchGallery', {
     method: 'POST',
     body: formData,

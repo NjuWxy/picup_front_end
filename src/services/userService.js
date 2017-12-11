@@ -1,5 +1,5 @@
 import request from '../utils/request';
-import { getUserName } from '../utils/tools';
+import { getUserName, getUid } from '../utils/tools';
 
 export function signUp(username,password) {
   console.log(password);
@@ -46,6 +46,34 @@ export function changePassword(oldPassword,newPassword) {
     return v.data;
   });
 }
+
+
+export function getUser(uid) {
+  const formData = new window.FormData();
+  formData.append('uid', uid);
+  const promise = request('/api/user/getUser', {
+    method: 'POST',
+    body: formData,
+  });
+  return promise.then((v) => {
+    printInfo(v.data,"getUser");
+    return v.data;
+  });
+}
+
+export function getMessageList() {
+  const formData = new window.FormData();
+  formData.append('uid', getUid());
+  const promise = request('/api/messageList', {
+    method: 'POST',
+    body: formData,
+  });
+  return promise.then((v) => {
+    printInfo(v.data,"messageList");
+    return v.data;
+  });
+}
+
 
 export function postAvatar(avatarFileName) {
   const formData = new window.FormData();
